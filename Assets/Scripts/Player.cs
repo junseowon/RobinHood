@@ -1,13 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
-{
+{    
+    public float nowHp;
+    public float maxHp;
+
+    public GameObject prfHpBar;
+    public GameObject canvas;
+
+    RectTransform hpBar;
+
+    public float height = 1.7f;
+
     new Rigidbody2D rigidbody2D;
-    new CapsuleCollider2D collider2D;
+    CapsuleCollider2D capsuleCollider2D;
     SpriteRenderer spriteRenderer;
     Animator animator;
+    Image nowHpBar;
 
     public float maxSpeed;
     public float jumpPower;
@@ -17,7 +29,13 @@ public class Player : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        collider2D = GetComponent<CapsuleCollider2D>();
+        capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+    }
+
+    private void Start()
+    {
+        hpBar = Instantiate(prfHpBar, canvas.transform).GetComponent<RectTransform>();
+        nowHpBar = hpBar.transform.GetChild(0).GetComponent<Image>();
     }
 
     void Update()
@@ -25,12 +43,13 @@ public class Player : MonoBehaviour
         Move();
         Jump();
         Sit();
+        Attack();
+        Hp();        
     }
 
     void FixedUpdate()
     {
         float h = Input.GetAxisRaw("Horizontal");
-
         rigidbody2D.AddForce(Vector2.right * h, ForceMode2D.Impulse);
 
         if(rigidbody2D.velocity.x > maxSpeed) //오른쪽 최대 스피드
@@ -40,6 +59,15 @@ public class Player : MonoBehaviour
         else if (rigidbody2D.velocity.x < maxSpeed * (-1)) //왼쪽 최대 스피드
         {
             rigidbody2D.velocity = new Vector2(maxSpeed * (-1), rigidbody2D.velocity.y);
+        }
+
+        if(h > 0)
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        else if(h < 0)
+        {
+            transform.eulerAngles = new Vector3(0, 180, 0);
         }
 
         if(rigidbody2D.velocity.y < 0)
@@ -55,6 +83,13 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
+
+    void Hp()
+    {
+        Vector2 hpBarPos = Camera.main.WorldToScreenPoint(new Vector2(transform.position.x, transform.position.y + height));
+        hpBar.position = hpBarPos;
+        nowHpBar.fillAmount = nowHp / maxHp;
     }
 
     void Jump()
@@ -81,12 +116,6 @@ public class Player : MonoBehaviour
             rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.normalized.x * 0.5f, rigidbody2D.velocity.y);
         }
 
-        //방향 전환
-        if (Input.GetButtonDown("Horizontal"))
-        {
-            spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
-        }
-
         if (rigidbody2D.velocity.normalized.x == 0)
         {
             animator.SetBool("isWalk", false);
@@ -99,7 +128,47 @@ public class Player : MonoBehaviour
 
     void Sit()
     {
-        
+        if(Input.GetKey("s") && !animator.GetBool("isWalk"))
+        {                        
+            capsuleCollider2D.size = new Vector2(capsuleCollider2D.size.x, 2.0f);                        
+            animator.SetBool("isSit", true);            
+        }
+        else
+        {
+            capsuleCollider2D.size = new Vector2(capsuleCollider2D.size.x, 2.8f);
+            animator.SetBool("isSit", false);                        
+        }
+
+        if (animator.GetBool("isJump") || animator.GetBool("isDoubleJump") || animator.GetBool("isAttack"))
+        {
+            capsuleCollider2D.size = new Vector2(capsuleCollider2D.size.x, 2.8f);
+            animator.SetBool("isSit", false);
+        }
+    }
+
+    void Attack()
+    {
+        if (Input.GetMouseButton(1) && !animator.GetBool("isWalk"))
+        {
+            animator.SetBool("isAttack", true);
+            AttackPower();
+        }
+        else
+        {
+            animator.SetBool("isAttack", false);
+        }
+
+        if (animator.GetBool("isJump") || animator.GetBool("isDoubleJump"))
+        {
+            animator.SetBool("isAttack", false);
+        }
+    }
+    void AttackPower()
+    {
+        Vector2 hpBarPos = Camera.main.WorldToScreenPoint(new Vector2(transform.position.x, transform.position.y + height));
+        hpBar.position = hpBarPos;
+        nowHpBar.fillAmount = nowHp / maxHp;
+        Arrow.speed = nowHpBar.fillAmount * 30;
     }
 
 }
