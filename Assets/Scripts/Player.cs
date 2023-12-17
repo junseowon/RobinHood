@@ -4,14 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
-{    
+{
+    //체력에 필요한 것들.
+    public GameObject prfHpBar;
     public float nowHp;
     public float maxHp;
-
-    public GameObject prfHpBar;
-    public GameObject canvas;
-
     RectTransform hpBar;
+    Image nowHpBar;
+
+    //파워바에 필요한 것들.
+    public GameObject prfPowerBar;
+    public static float nowPower = 0;
+    public float maxPower;
+    RectTransform powerBar;
+    Image nowPowerBar;
+
+    public GameObject canvas;
 
     public float height = 1.7f;
 
@@ -19,7 +27,7 @@ public class Player : MonoBehaviour
     CapsuleCollider2D capsuleCollider2D;
     SpriteRenderer spriteRenderer;
     Animator animator;
-    Image nowHpBar;
+
 
     public float maxSpeed;
     public float jumpPower;
@@ -36,6 +44,9 @@ public class Player : MonoBehaviour
     {
         hpBar = Instantiate(prfHpBar, canvas.transform).GetComponent<RectTransform>();
         nowHpBar = hpBar.transform.GetChild(0).GetComponent<Image>();
+
+        powerBar = Instantiate(prfPowerBar, canvas.transform).GetComponent<RectTransform>();
+        nowPowerBar = powerBar.transform.GetChild(0).GetComponent<Image>();
     }
 
     void Update()
@@ -44,7 +55,8 @@ public class Player : MonoBehaviour
         Jump();
         Sit();
         Attack();
-        Hp();        
+        Hp();
+        AttackPower();
     }
 
     void FixedUpdate()
@@ -90,6 +102,14 @@ public class Player : MonoBehaviour
         Vector2 hpBarPos = Camera.main.WorldToScreenPoint(new Vector2(transform.position.x, transform.position.y + height));
         hpBar.position = hpBarPos;
         nowHpBar.fillAmount = nowHp / maxHp;
+    }
+
+    void AttackPower()
+    {
+        Vector2 powerBarPos = Camera.main.WorldToScreenPoint(new Vector2(transform.position.x, transform.position.y + height + 0.3f));
+        powerBar.position = powerBarPos;
+        nowPowerBar.fillAmount = nowPower / maxPower;
+        Arrow.speed = nowPowerBar.fillAmount * 30;
     }
 
     void Jump()
@@ -151,10 +171,11 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButton(1) && !animator.GetBool("isWalk"))
         {
             animator.SetBool("isAttack", true);
-            AttackPower();
+            nowPower += Time.deltaTime * 50;
         }
         else
         {
+            nowPower = 0;
             animator.SetBool("isAttack", false);
         }
 
@@ -163,12 +184,6 @@ public class Player : MonoBehaviour
             animator.SetBool("isAttack", false);
         }
     }
-    void AttackPower()
-    {
-        Vector2 hpBarPos = Camera.main.WorldToScreenPoint(new Vector2(transform.position.x, transform.position.y + height));
-        hpBar.position = hpBarPos;
-        nowHpBar.fillAmount = nowHp / maxHp;
-        Arrow.speed = nowHpBar.fillAmount * 30;
-    }
+    
 
 }

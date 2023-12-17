@@ -283,11 +283,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de5c69cd9de9144e981140f687c5f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prfHpBar: {fileID: 8782727468707729685, guid: 54019034c0fae3e4a8094c6dcdd27c01, type: 3}
   nowHp: 100
   maxHp: 100
-  prfHpBar: {fileID: 8782727468707729685, guid: 54019034c0fae3e4a8094c6dcdd27c01, type: 3}
+  prfPowerBar: {fileID: 1482431283344073761, guid: cbdfce235e2cfd8499261112dd767966, type: 3}
+  maxPower: 100
   canvas: {fileID: 1334488536}
-  height: 1.5
+  height: 1.7
   maxSpeed: 7
   jumpPower: 12
 --- !u!95 &499168666
@@ -361,7 +363,7 @@ MonoBehaviour:
   attacker: {fileID: 499168660}
   arrow: {fileID: 3888991651163985582, guid: 94e2f80cadf50934d81918d19a88589c, type: 3}
   pos: {fileID: 168904017}
-  loadingTime: 2
+  loadingTime: 0.3
   completeLoadTime: 0
   isShoot: 0
 --- !u!1 &519420028

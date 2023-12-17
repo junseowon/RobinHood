@@ -6,22 +6,39 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Arrow : MonoBehaviour
 {
+    new Rigidbody2D rigidbody2D;
+
     public static float speed;
-    void Start()
+    private float crrent_speed;
+
+    private void Awake()
     {
-        Invoke("DestroyArrow", 2);
+        rigidbody2D = GetComponent<Rigidbody2D>();
+
+        
+    }
+
+    private void Start()
+    {
+        crrent_speed = speed;
+        Invoke("DestroyArrow", 5);
     }
 
     void Update()
     {
-        if(transform.rotation.y == 0)
+        if(crrent_speed > 0)
         {
-            transform.Translate(transform.right * speed * Time.deltaTime);
+            if (transform.rotation.y == 0)
+            {
+                transform.Translate(transform.right * crrent_speed * Time.deltaTime);
+            }
+            else
+            {
+                transform.Translate(transform.right * (-1) * crrent_speed * Time.deltaTime);
+            }
+            crrent_speed -= Time.deltaTime * 7;
         }
-        else
-        {
-            transform.Translate(transform.right * (-1) * speed * Time.deltaTime);
-        }
+        
         
     }
 

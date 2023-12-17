@@ -34,6 +34,7 @@ public class PlayerAttack : MonoBehaviour
                 {   
                     Instantiate(arrow, pos.position, transform.rotation);                
                     completeLoadTime = loadingTime;
+                    Player.nowPower = 0;
                 }                
             }
             completeLoadTime -= Time.deltaTime;
