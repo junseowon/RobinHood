@@ -73,16 +73,16 @@ public class Player : MonoBehaviour
             rigidbody2D.velocity = new Vector2(maxSpeed * (-1), rigidbody2D.velocity.y);
         }
 
-        if(h > 0)
+        if (h > 0)
         {
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        else if(h < 0)
+        else if (h < 0)
         {
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
 
-        if(rigidbody2D.velocity.y < 0)
+        if (rigidbody2D.velocity.y < 0)
         {
             RaycastHit2D raycastHit2D = Physics2D.Raycast(rigidbody2D.position, Vector3.down, 2, LayerMask.GetMask("Platform"));
 
@@ -134,7 +134,7 @@ public class Player : MonoBehaviour
         if (Input.GetButtonUp("Horizontal"))
         {
             rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.normalized.x * 0.5f, rigidbody2D.velocity.y);
-        }
+        }       
 
         if (rigidbody2D.velocity.normalized.x == 0)
         {
